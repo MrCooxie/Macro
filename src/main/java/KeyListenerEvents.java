@@ -12,12 +12,12 @@ import java.util.concurrent.TimeUnit;
 public class KeyListenerEvents implements NativeKeyListener {
 
     Stopwatch localStopWatch;
-    StringBuilder code;
+    ArrayList<InputInfo> code;
 
     ArrayList<KeyInfo> keyPresses = new ArrayList<>();
 
     String fileName;
-    KeyListenerEvents(StringBuilder code, Stopwatch localStopWatch, String fileName){
+    KeyListenerEvents( ArrayList<InputInfo> code, Stopwatch localStopWatch, String fileName){
         this.code = code;
         this.localStopWatch = localStopWatch;
         this.fileName = fileName;
@@ -27,16 +27,14 @@ public class KeyListenerEvents implements NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent event){
         String keyPressed = NativeKeyEvent.getKeyText(event.getKeyCode()).toLowerCase();
-        if(keyPressed.equals("escape")){
-            try {
-                BufferedWriter b_writer = new BufferedWriter(new FileWriter(String.format("src/main/java/MacroList/%s", fileName)));
+       /* if(keyPressed.equals("escape")){
+            try (BufferedWriter b_writer = new BufferedWriter(new FileWriter(String.format("src/main/java/MacroList/%s", fileName)))){
                 b_writer.write(code.toString());
-                b_writer.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             System.exit(1);
-        }
+        }*/
 
         boolean isInKeyPresses = false;
         for(int i = 0; i < keyPresses.size(); i++){
@@ -47,9 +45,8 @@ public class KeyListenerEvents implements NativeKeyListener {
             }
         }
         if(!isInKeyPresses){
-            keyPresses.add(new KeyInfo(keyPressed,String.format("{%d}",localStopWatch.stop().elapsed(TimeUnit.MILLISECONDS))));
+            keyPresses.add(new KeyInfo(keyPressed,localStopWatch.stop().elapsed(TimeUnit.MILLISECONDS)));
         }
-
 
     }
     @Override
@@ -59,10 +56,12 @@ public class KeyListenerEvents implements NativeKeyListener {
            KeyInfo keyInfo = keyPresses.get(i);
            if(keyInfo.keyValue.equals(keyPressed)){
                keyPresses.remove(i);
-                code.append(String.format("A{K%s{%d}{%d}}",keyInfo.keyValue,localStopWatch.elapsed(TimeUnit.MILLISECONDS),keyInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+               keyInfo.totalTimeForAction += keyInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
+                code.add(keyInfo);
                 localStopWatch.reset().start();
                break;
            }
        }
+        System.out.println(code);
     }
 }

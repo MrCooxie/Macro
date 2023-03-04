@@ -1,15 +1,16 @@
 import com.google.common.base.Stopwatch;
-public class MouseInfo {
+
+import java.util.ArrayList;
+
+public class MouseInfo extends InputInfo {
     int clickValue;
-    StringBuilder code;
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    int totalTimeForAction = 0;
-    MouseInfo(int clickValue, String time, String code){
+    ArrayList<String> code = new ArrayList<>();
+    MouseInfo(int clickValue, long timeAfterAction, String code){
         this.clickValue = clickValue;
-        this.code = new StringBuilder("M" + clickValue + time + "[" + code);
+        this.code.add(code);
+        this.timeAfterAction = timeAfterAction;
     }
-    @Override
     public String toString(){
-        return String.format("{Click Value:%d}; {Code: %s};", clickValue,code.toString());
+        return String.format("{Input Value:%d}; {Code: %s}; {TotalTimeForAction: %d}; {TimeAfterAction: %d}", clickValue,code, totalTimeForAction, timeAfterAction);
     }
 }

@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 public class MouseListenerEvents implements NativeMouseInputListener, NativeMouseMotionListener {
     ArrayList<MouseInfo> mousePresses = new ArrayList<>();
     Stopwatch localStopWatch;
-    StringBuilder code;
+    ArrayList<InputInfo> code;
 
-    MouseListenerEvents(StringBuilder code, Stopwatch localStopWatch) {
+    MouseListenerEvents( ArrayList<InputInfo> code, Stopwatch localStopWatch) {
         this.code = code;
         this.localStopWatch = localStopWatch;
     }
@@ -19,7 +19,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
     @Override
     public void nativeMousePressed(NativeMouseEvent event) {
         int clickButton = event.getButton();
-        mousePresses.add(new MouseInfo(clickButton,String.format("{%d}",localStopWatch.elapsed(TimeUnit.MILLISECONDS)),String.format("(X:%d; Y:%d; T:%d)",event.getX(),event.getY(), 0)));
+        mousePresses.add(new MouseInfo(clickButton,localStopWatch.elapsed(TimeUnit.MILLISECONDS),String.format("(X:%d; Y:%d; T:%d)",event.getX(),event.getY(), 0)));
         localStopWatch.reset().start();
 
 
@@ -33,10 +33,12 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
             if(mouseInfo.clickValue == clickButton){
                 mousePresses.remove(i);
                 mouseInfo.totalTimeForAction += mouseInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
-                code.append(String.format("A{%s]{%d}}",mouseInfo.code,mouseInfo.totalTimeForAction));
+                System.out.println();
+                code.add(mouseInfo);
                 break;
             }
         }
+        System.out.println(code);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
                 if(mouseInfo.clickValue == buttonClick){
                     long time = mouseInfo.stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
                     mouseInfo.totalTimeForAction +=  time;
-                    mouseInfo.code.append(String.format(",(X:%d; Y:%d; T:%d)",event.getX(),event.getY(),time));
+                    mouseInfo.code.add(String.format("(X:%d; Y:%d; T:%d)",event.getX(),event.getY(),time));
                     mouseInfo.stopwatch.reset().start();
                     break;
                 }
