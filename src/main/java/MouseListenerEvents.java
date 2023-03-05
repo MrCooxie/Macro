@@ -19,7 +19,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
     @Override
     public void nativeMousePressed(NativeMouseEvent event) {
         int clickButton = event.getButton();
-        mousePresses.add(new MouseInfo(clickButton,localStopWatch.elapsed(TimeUnit.MILLISECONDS),String.format("(X:%d; Y:%d; T:%d)",event.getX(),event.getY(), 0)));
+        mousePresses.add(new MouseInfo(clickButton,localStopWatch.elapsed(TimeUnit.MILLISECONDS),event.getX(),event.getY(),0));
         localStopWatch.reset().start();
 
 
@@ -27,10 +27,10 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
 
     @Override
     public void nativeMouseReleased(NativeMouseEvent event) {
-        int clickButton = event.getButton();
+        String clickButton = String.valueOf(event.getButton());
         for(int i = 0; i < mousePresses.size();i++){
             MouseInfo mouseInfo = mousePresses.get(i);
-            if(mouseInfo.clickValue == clickButton){
+            if(mouseInfo.inputValue.equals(clickButton)){
                 mousePresses.remove(i);
                 mouseInfo.totalTimeForAction += mouseInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
                 System.out.println();
@@ -38,18 +38,16 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
                 break;
             }
         }
-        System.out.println(code);
     }
-
     @Override
     public void nativeMouseDragged(NativeMouseEvent event) {
-        int buttonClick = (int) (Math.log(event.getModifiers()) / Math.log(2)) - 7;
+        String buttonClick = String.valueOf((int) (Math.log(event.getModifiers()) / Math.log(2)) - 7);
         for(int i = 0; i < mousePresses.size();i++){
                 MouseInfo mouseInfo = mousePresses.get(i);
-                if(mouseInfo.clickValue == buttonClick){
+                if(mouseInfo.inputValue.equals(buttonClick)){
                     long time = mouseInfo.stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
                     mouseInfo.totalTimeForAction +=  time;
-                    mouseInfo.code.add(String.format("(X:%d; Y:%d; T:%d)",event.getX(),event.getY(),time));
+                    mouseInfo.actionAttributes.add(new ActionAttributeData(event.getX(),event.getY(),time));
                     mouseInfo.stopwatch.reset().start();
                     break;
                 }

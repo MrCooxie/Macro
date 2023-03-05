@@ -2,10 +2,19 @@ import com.google.common.base.Stopwatch;
 
 import java.util.ArrayList;
 
-abstract class InputInfo {
-   int totalTimeForAction = 0;
+ class InputInfo {
 
-   Stopwatch stopwatch = Stopwatch.createStarted();
+
+    String inputValue;
+
+   ArrayList<ActionAttributeData> actionAttributes = null;
+   int totalTimeForAction = 0;
    long timeAfterAction;
-   public abstract String toString();
+     Stopwatch stopwatch = Stopwatch.createStarted();
+
+     @Override
+    public String toString() {
+       return String.format("InputInfo [ class: %s, inputValue: %s, code: %s, totalTimeForAction: %d, timeAfterAction: %d", this.getClass().getSimpleName(),inputValue, actionAttributes,totalTimeForAction,timeAfterAction);
+    }
+
 }

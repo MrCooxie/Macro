@@ -1,12 +1,14 @@
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.common.base.Stopwatch;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class KeyListenerEvents implements NativeKeyListener {
@@ -27,19 +29,27 @@ public class KeyListenerEvents implements NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent event){
         String keyPressed = NativeKeyEvent.getKeyText(event.getKeyCode()).toLowerCase();
-       /* if(keyPressed.equals("escape")){
-            try (BufferedWriter b_writer = new BufferedWriter(new FileWriter(String.format("src/main/java/MacroList/%s", fileName)))){
-                b_writer.write(code.toString());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if(keyPressed.equals("escape")){
+            ArrayList<InputInfoDTO> codeDTO = new ArrayList<>();
+            for(int i = 0; i< code.size();i++){
+                codeDTO.add(new InputInfoDTO(code.get(i)));
+            }
+                GsonBuilder builder = new GsonBuilder();
+                builder.setPrettyPrinting();
+                Gson gson = builder.create();
+                String jsonString = gson.toJson(codeDTO);
+            try(BufferedWriter b_writer = new BufferedWriter(new FileWriter("src/main/java/MacroList/" + fileName))){
+                b_writer.write(jsonString);
+            } catch (IOException e){
+                throw new RuntimeException();
             }
             System.exit(1);
-        }*/
+        }
 
         boolean isInKeyPresses = false;
         for(int i = 0; i < keyPresses.size(); i++){
             KeyInfo keyInfo = keyPresses.get(i);
-            if(keyInfo.keyValue.equals( keyPressed)){
+            if(keyInfo.inputValue.equals(keyPressed)){
                 isInKeyPresses = true;
                 break;
             }
@@ -54,7 +64,7 @@ public class KeyListenerEvents implements NativeKeyListener {
         String keyPressed = NativeKeyEvent.getKeyText(event.getKeyCode()).toLowerCase();
        for(int i = 0; i < keyPresses.size();i++){
            KeyInfo keyInfo = keyPresses.get(i);
-           if(keyInfo.keyValue.equals(keyPressed)){
+           if(keyInfo.inputValue.equals(keyPressed)){
                keyPresses.remove(i);
                keyInfo.totalTimeForAction += keyInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
                 code.add(keyInfo);
