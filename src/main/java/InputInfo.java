@@ -1,3 +1,4 @@
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 
 import java.util.ArrayList;
@@ -5,12 +6,23 @@ import java.util.ArrayList;
  class InputInfo {
 
 
-    String inputValue;
+      InputInfo(String inputValue, ArrayList<ActionAttributeData> actionAttributes, int totalTimeForAction, long timeAfterAction) {
+         this.inputValue = inputValue;
+         this.actionAttributes = actionAttributes;
+         this.totalTimeForAction = totalTimeForAction;
+         this.timeAfterAction = timeAfterAction;
+     }
+      InputInfo(String inputValue, long timeAfterAction){
+          this(inputValue, null,0,timeAfterAction);
+     }
 
-   ArrayList<ActionAttributeData> actionAttributes = null;
-   int totalTimeForAction = 0;
+     String inputValue;
+
+   ArrayList<ActionAttributeData> actionAttributes;
+   int totalTimeForAction;
    long timeAfterAction;
      Stopwatch stopwatch = Stopwatch.createStarted();
+
 
      @Override
     public String toString() {
