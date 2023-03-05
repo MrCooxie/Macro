@@ -38,7 +38,9 @@ public class KeyListenerEvents implements NativeKeyListener {
                 builder.setPrettyPrinting();
                 Gson gson = builder.create();
                 String jsonString = gson.toJson(codeDTO);
-            try(BufferedWriter b_writer = new BufferedWriter(new FileWriter("src/main/java/MacroList/" + fileName))){
+                System.out.println(jsonString);
+                InputInfoDTO[] infoDTOS = gson.fromJson(jsonString, InputInfoDTO[].class);
+                try(BufferedWriter b_writer = new BufferedWriter(new FileWriter("src/main/java/MacroList/" + fileName))){
                 b_writer.write(jsonString);
             } catch (IOException e){
                 throw new RuntimeException();

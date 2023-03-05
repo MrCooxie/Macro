@@ -2,12 +2,14 @@ import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.google.common.base.Stopwatch;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Recorder {
     public static void main(String[] args){
-        Player player = new Player("Test");
-        /*try {
+       Player player = new Player(JsonDeserialization.deserialize("Test"));
+        player.play();
+       /* try {
             GlobalScreen.registerNativeHook();
         } catch(NativeHookException exception){
             System.err.println("There was an error registering the events");

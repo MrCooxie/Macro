@@ -1,101 +1,36 @@
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
-
-    Player(String fileName){
-        play(fileName);
+    InputInfoDTO[] Actions;
+    Player(InputInfoDTO[] Actions){
+        this.Actions = Actions;
     }
-    private void play(String fileName){
-        ArrayList<InputInfoDTO> Actions;
-        Gson gson = new Gson();
-        try(JsonReader jsonReader = gson.newJsonReader(new FileReader("src/main/java/MacroList/" + fileName))){
-            Actions = readActionsArray(jsonReader);
-            System.out.println(Actions);
-        } catch (IOException e){
+    public void play(){
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
             System.err.println(e.getMessage());
             System.exit(-1);
         }
-    }
-    private ArrayList<InputInfoDTO> readActionsArray(JsonReader jsonReader) throws IOException {
-        ArrayList<InputInfoDTO> code = new ArrayList<>();
-        jsonReader.beginArray();
-        while(jsonReader.hasNext()){
-            code.add(readMessage(jsonReader));
-        }
-        jsonReader.endArray();
-        return code;
-    }
-    private InputInfoDTO readMessage(JsonReader jsonReader) throws IOException {
-        String inputValue = null;
-        int totalTimeForAction = -1;
-        int timeAfterAction = -1;
-        ArrayList<ActionAttributeData> actionAttributeData = null;
-
-        jsonReader.beginObject();
-        System.out.println(jsonReader.peek());
-        while (jsonReader.hasNext()){
-            String name = jsonReader.nextName();
-            switch (name) {
-                case "inputValue":
-                    inputValue = jsonReader.nextString();
-                    break;
-                case "code":
-                    if(jsonReader.peek() != JsonToken.NULL){
-                        actionAttributeData = readActionAttributeArray(jsonReader);
+        for(int i = 0; i < Actions.length; i++){
+            if(Actions[i].inputInfoClass.equals("MouseInfoLocal")){
+                ArrayList<ActionAttributeData> attributes = Actions[i].code;
+                int inputValue = Integer.parseInt(Actions[i].inputValue);
+                robot.delay((int)Actions[i].timeAfterAction);
+                for(int j = 0; j < attributes.size(); j++){
+                    ActionAttributeData temp = attributes.get(i);
+                    robot.mouseMove(temp.XCoordinate,temp.YCoordinate);
+                    robot.mousePress(InputEvent.getMaskForButton(inputValue));
+                    if(attributes.size() == 1) {
+                        robot.delay(Actions[i].totalTimeForAction);
                     }
-                    break;
-                case "totalTimeForAction":
-                    totalTimeForAction = jsonReader.nextInt();
-                    break;
-                case "timeAfterAction":
-                    timeAfterAction = jsonReader.nextInt();
-                default:
-                    jsonReader.skipValue();
-                    break;
+                }
+                robot.mouseRelease(InputEvent.getMaskForButton(inputValue));
             }
         }
-        jsonReader.endObject();
-        InputInfo inputInfo = new InputInfo(inputValue,actionAttributeData,totalTimeForAction,timeAfterAction);
-        System.out.println("Hello");
-        return new InputInfoDTO(inputInfo);
-    }
-    private ArrayList<ActionAttributeData> readActionAttributeArray(JsonReader jsonReader) throws IOException {
-        ArrayList<ActionAttributeData> code = new ArrayList<>();
-        jsonReader.beginArray();
-        while(jsonReader.hasNext()){
-            code.add(readActionAttribute(jsonReader));
-        }
-        jsonReader.endArray();
-        return code;
-    }
-    private ActionAttributeData readActionAttribute(JsonReader jsonReader) throws IOException {
-        int XCoordinate = -1;
-        int YCoordinate = -1;
-        long Time = -1;
-        jsonReader.beginObject();
-        while ( jsonReader.hasNext()) {
-            String name = jsonReader.nextName();
-            switch (name) {
-                case "XCoordinate":
-                    XCoordinate = jsonReader.nextInt();
-                    break;
-                case "YCoordinate":
-                    YCoordinate = jsonReader.nextInt();
-                    break;
-                case "time": //TODO replace with "Time" later
-                    Time = jsonReader.nextLong();
-                    break;
-                default:
-                    jsonReader.skipValue();
-            }
-        }
-            jsonReader.endObject();
-            return new ActionAttributeData(XCoordinate,YCoordinate,Time);
     }
 }

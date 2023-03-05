@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MouseListenerEvents implements NativeMouseInputListener, NativeMouseMotionListener {
-    ArrayList<MouseInfo> mousePresses = new ArrayList<>();
+    ArrayList<MouseInfoLocal> mousePresses = new ArrayList<>();
     Stopwatch localStopWatch;
     ArrayList<InputInfo> code;
 
@@ -19,7 +19,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
     @Override
     public void nativeMousePressed(NativeMouseEvent event) {
         int clickButton = event.getButton();
-        mousePresses.add(new MouseInfo(clickButton,localStopWatch.elapsed(TimeUnit.MILLISECONDS),event.getX(),event.getY(),0));
+        mousePresses.add(new MouseInfoLocal(clickButton,localStopWatch.elapsed(TimeUnit.MILLISECONDS),event.getX(),event.getY(),0));
         localStopWatch.reset().start();
 
 
@@ -29,7 +29,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
     public void nativeMouseReleased(NativeMouseEvent event) {
         String clickButton = String.valueOf(event.getButton());
         for(int i = 0; i < mousePresses.size();i++){
-            MouseInfo mouseInfo = mousePresses.get(i);
+            MouseInfoLocal mouseInfo = mousePresses.get(i);
             if(mouseInfo.inputValue.equals(clickButton)){
                 mousePresses.remove(i);
                 mouseInfo.totalTimeForAction += mouseInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
@@ -43,7 +43,7 @@ public class MouseListenerEvents implements NativeMouseInputListener, NativeMous
     public void nativeMouseDragged(NativeMouseEvent event) {
         String buttonClick = String.valueOf((int) (Math.log(event.getModifiers()) / Math.log(2)) - 7);
         for(int i = 0; i < mousePresses.size();i++){
-                MouseInfo mouseInfo = mousePresses.get(i);
+                MouseInfoLocal mouseInfo = mousePresses.get(i);
                 if(mouseInfo.inputValue.equals(buttonClick)){
                     long time = mouseInfo.stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
                     mouseInfo.totalTimeForAction +=  time;
