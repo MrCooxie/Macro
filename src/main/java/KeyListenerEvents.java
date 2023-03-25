@@ -1,79 +1,61 @@
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.common.base.Stopwatch;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class KeyListenerEvents implements NativeKeyListener {
 
-    Stopwatch localStopWatch;
-    ArrayList<InputInfo> code;
+class KeyListenerEvents implements NativeKeyListener {
 
-    ArrayList<KeyInfo> keyPresses = new ArrayList<>();
-
-    String fileName;
-    KeyListenerEvents( ArrayList<InputInfo> code, Stopwatch localStopWatch, String fileName){
-        this.code = code;
-        this.localStopWatch = localStopWatch;
-        this.fileName = fileName;
+    ArrayList<String> keysActive = new ArrayList<>();
+    ArrayList<ActionInfo> listOfActions;
+    Stopwatch localStopWatch = Stopwatch.createStarted();
+    public KeyListenerEvents(ArrayList<ActionInfo> listOfActions){
+        this.listOfActions = listOfActions;
+    }
+    @Override
+    public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
+        String buttonType = NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase();
+        //check whether some key is already pressed down, so I don't duplicate keyPressed Events
+        for(int i = 0; i < keysActive.size();i++){
+            if(keysActive.get(i).equals(buttonType)) {
+                return;
+            }
+        }
+        addWait();
+        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_PRESSED, new Attribute(buttonType));
+        keysActive.add(buttonType);
+        listOfActions.add(info);
     }
 
-
     @Override
-    public void nativeKeyPressed(NativeKeyEvent event){
-        String keyPressed = NativeKeyEvent.getKeyText(event.getKeyCode()).toLowerCase();
-        if(keyPressed.equals("escape")){
-            ArrayList<InputInfoDTO> codeDTO = new ArrayList<>();
-            for(int i = 0; i< code.size();i++){
-                codeDTO.add(new InputInfoDTO(code.get(i)));
-            }
-                GsonBuilder builder = new GsonBuilder();
-                builder.setPrettyPrinting();
-                Gson gson = builder.create();
-                String jsonString = gson.toJson(codeDTO);
-                System.out.println(jsonString);
-                InputInfoDTO[] infoDTOS = gson.fromJson(jsonString, InputInfoDTO[].class);
-                try(BufferedWriter b_writer = new BufferedWriter(new FileWriter("src/main/java/MacroList/" + fileName))){
-                b_writer.write(jsonString);
-            } catch (IOException e){
-                throw new RuntimeException();
-            }
-            System.exit(1);
-        }
+    public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
+        String buttonType = NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase();
 
-        boolean isInKeyPresses = false;
-        for(int i = 0; i < keyPresses.size(); i++){
-            KeyInfo keyInfo = keyPresses.get(i);
-            if(keyInfo.inputValue.equals(keyPressed)){
-                isInKeyPresses = true;
+
+        addWait();
+        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_RELEASED, new Attribute((NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase())));
+        listOfActions.add(info);
+        for(int i = 0; i < keysActive.size(); i++){
+            if(keysActive.get(i).equals(buttonType)){
+                keysActive.remove(i);
                 break;
             }
         }
-        if(!isInKeyPresses){
-            keyPresses.add(new KeyInfo(keyPressed,localStopWatch.stop().elapsed(TimeUnit.MILLISECONDS)));
-        }
 
+        printListOfActionInfo();
     }
-    @Override
-    public void nativeKeyReleased(NativeKeyEvent event){
-        String keyPressed = NativeKeyEvent.getKeyText(event.getKeyCode()).toLowerCase();
-       for(int i = 0; i < keyPresses.size();i++){
-           KeyInfo keyInfo = keyPresses.get(i);
-           if(keyInfo.inputValue.equals(keyPressed)){
-               keyPresses.remove(i);
-               keyInfo.totalTimeForAction += keyInfo.stopwatch.elapsed(TimeUnit.MILLISECONDS);
-                code.add(keyInfo);
-                localStopWatch.reset().start();
-               break;
-           }
-       }
-        System.out.println(code);
+    public void addWait(){
+        ActionInfo info = new ActionInfo(Action.WAIT, new Attribute(localStopWatch.stop().elapsed(TimeUnit.MILLISECONDS)));
+        listOfActions.add(info);
+        localStopWatch.reset().start();
+    }
+    public void printListOfActionInfo(){
+        for(int i = 0; i < listOfActions.size();i++){
+            Action action = listOfActions.get(i).action;
+            Attribute attribute = listOfActions.get(i).attribute;
+            System.out.printf("ActionType:%s; ButtonType:%s; Duration:%d\n",action.toString(),attribute.buttonType, attribute.duration);
+        }
     }
 }
