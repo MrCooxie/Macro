@@ -1,5 +1,6 @@
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
+import com.google.common.base.Stopwatch;
 
 import java.util.ArrayList;
 
@@ -15,11 +16,13 @@ public class Recorder {
             System.exit(1);
         }
         ArrayList<ActionInfo> arrayList = new ArrayList<>();
-        KeyListenerEvents keyListenerEvents = new KeyListenerEvents(arrayList);
-        MouseListenerEvents mouseListenerEvent = new MouseListenerEvents();
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        KeyListenerEvents keyListenerEvents = new KeyListenerEvents(arrayList, stopwatch);
+        MouseListenerEvents mouseListenerEvent = new MouseListenerEvents(arrayList,stopwatch);
 
         GlobalScreen.addNativeMouseListener(mouseListenerEvent);
         GlobalScreen.addNativeMouseMotionListener(mouseListenerEvent);
         GlobalScreen.addNativeKeyListener(keyListenerEvents);
     }
+
 }

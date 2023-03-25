@@ -10,9 +10,10 @@ class KeyListenerEvents implements NativeKeyListener {
 
     ArrayList<String> keysActive = new ArrayList<>();
     ArrayList<ActionInfo> listOfActions;
-    Stopwatch localStopWatch = Stopwatch.createStarted();
-    public KeyListenerEvents(ArrayList<ActionInfo> listOfActions){
+    Stopwatch localStopWatch;
+    public KeyListenerEvents(ArrayList<ActionInfo> listOfActions, Stopwatch globalStopWatch){
         this.listOfActions = listOfActions;
+        localStopWatch = globalStopWatch;
     }
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
@@ -28,12 +29,9 @@ class KeyListenerEvents implements NativeKeyListener {
         keysActive.add(buttonType);
         listOfActions.add(info);
     }
-
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
         String buttonType = NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase();
-
-
         addWait();
         ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_RELEASED, new Attribute((NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase())));
         listOfActions.add(info);
@@ -43,7 +41,6 @@ class KeyListenerEvents implements NativeKeyListener {
                 break;
             }
         }
-
         printListOfActionInfo();
     }
     public void addWait(){
