@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Recorder {
     public static void main(String[] args){
 
-     /* try {
+      try {
             GlobalScreen.registerNativeHook();
         } catch(NativeHookException exception){
             System.err.println("There was an error registering the events");
@@ -21,7 +21,7 @@ public class Recorder {
 
         GlobalScreen.addNativeMouseListener(mouseListenerEvent);
         GlobalScreen.addNativeMouseMotionListener(mouseListenerEvent);
-        GlobalScreen.addNativeKeyListener(keyListenerEvents);*/
+        GlobalScreen.addNativeKeyListener(keyListenerEvents);
         Player.play("C:\\Users\\user\\Documents\\AllProgrammingProjects\\Java Programs\\Macro\\src\\main\\java\\MacroList\\Test");
     }
 }
