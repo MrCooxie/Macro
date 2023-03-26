@@ -1,26 +1,22 @@
 import com.google.common.base.Stopwatch;
-
-import java.util.ArrayList;
-
 public class Attribute {
-    String buttonType = null;
-    long duration = 0;
-
-    Stopwatch stopwatch = Stopwatch.createUnstarted();
-    ArrayList<CoordinateInfo> coordinateAttributes = null;
-
-    public Attribute(String buttonType, ArrayList<CoordinateInfo> coordinateAttributes) {
-        stopwatch.start();
+    int buttonType;
+    long duration;
+    CoordinateInfo coordinates;
+    public Attribute(int buttonType, long duration, CoordinateInfo coordinates){
         this.buttonType = buttonType;
-        this.coordinateAttributes = coordinateAttributes;
-    }
-    public Attribute(String buttonType){
-        stopwatch.start();
-        this.buttonType = buttonType;
+        this.duration = duration;
+        this.coordinates = coordinates;
 
     }
     public Attribute(long duration){
-        this.duration = duration;
+        this(-1,duration,null);
+    }
+    public Attribute(int buttonType){
+        this(buttonType,0,null);
+    }
+    public Attribute(CoordinateInfo coordinates){
+        this(-1,0,coordinates);
     }
 
 }
