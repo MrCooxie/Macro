@@ -1,7 +1,6 @@
-package Main;
+package main;
 
-import Main.Action;
-import TypesOfAttributes.Attribute;
+import attributes.Attribute;
 
 public class ActionInfo {
     Action action;

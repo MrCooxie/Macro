@@ -1,4 +1,4 @@
-package TypesOfAttributes;
+package attributes;
 
 public class MousePressAttribute implements Attribute{
     int buttonType;
@@ -6,4 +6,8 @@ public class MousePressAttribute implements Attribute{
         this.buttonType = buttonType;
     }
 
+    @Override
+    public void accept(AttributeTypeVisitor attributeTypeVisitor) {
+        attributeTypeVisitor.visit(this);
+    }
 }

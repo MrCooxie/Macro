@@ -1,4 +1,4 @@
-package TypesOfAttributes;
+package attributes;
 
 public class CoordinateInfo {
     int x;

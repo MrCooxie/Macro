@@ -1,10 +1,6 @@
-package Main;
+package main;
 
-import Main.Action;
-import Main.ActionInfo;
-import TypesOfAttributes.Attribute;
-import TypesOfAttributes.MouseMoveAttribute;
-import TypesOfAttributes.WaitAttribute;
+import attributes.WaitAttribute;
 import com.google.common.base.Stopwatch;
 
 import java.util.ArrayList;

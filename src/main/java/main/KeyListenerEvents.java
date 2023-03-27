@@ -1,9 +1,6 @@
-package Main;
+package main;
 
-import Main.Action;
-import Main.ActionInfo;
-import TypesOfAttributes.Attribute;
-import TypesOfAttributes.KeyPressAttribute;
+import attributes.KeyPressAttribute;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.common.base.Stopwatch;

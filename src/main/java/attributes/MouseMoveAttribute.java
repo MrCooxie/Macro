@@ -1,4 +1,4 @@
-package TypesOfAttributes;
+package attributes;
 
 public class MouseMoveAttribute implements Attribute {
     CoordinateInfo coordinateInfo;
@@ -6,4 +6,8 @@ public class MouseMoveAttribute implements Attribute {
         this.coordinateInfo = coordinateInfo;
     }
 
+    @Override
+    public void accept(AttributeTypeVisitor attributeTypeVisitor) {
+        attributeTypeVisitor.visit(this);
+    }
 }

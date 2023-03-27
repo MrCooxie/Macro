@@ -1,7 +1,8 @@
-package Main;
+package main;
 
-import Main.ActionInfo;
-import Main.Listeners;
+import attributes.Attribute;
+import attributes.AttributeTypeDisplayVisitor;
+import attributes.WaitAttribute;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -16,6 +17,7 @@ class Player {
 
     }
     public static void play(String fileName){
+
         Robot robot;
         try {
             robot = new Robot();
@@ -26,7 +28,10 @@ class Player {
        for(int i = 0; i < actions.length;i++){
            ActionInfo action = actions[i];
            switch(action.action){
-               case WAIT -> robot.delay((int) action.attribute.duration);
+               case WAIT ->{
+                   Attribute attribute = action.attribute;
+                   long delay = attribute.accept(new AttributeTypeDisplayVisitor());
+               }
                case MOUSE_CLICK_PRESSED -> robot.mousePress(InputEvent.getMaskForButton(action.attribute.buttonType));
                case MOUSE_CLICK_RELEASED -> robot.mouseRelease(InputEvent.getMaskForButton(action.attribute.buttonType));
                case MOUSE_MOVE -> robot.mouseMove(action.attribute.coordinates.X_Coordinate, action.attribute.coordinates.Y_Coordinate);

@@ -1,9 +1,8 @@
-package Main;
+package main;
 
-import TypesOfAttributes.Attribute;
-import TypesOfAttributes.CoordinateInfo;
-import TypesOfAttributes.MouseMoveAttribute;
-import TypesOfAttributes.MousePressAttribute;
+import attributes.CoordinateInfo;
+import attributes.MouseMoveAttribute;
+import attributes.MousePressAttribute;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import com.github.kwhat.jnativehook.mouse.NativeMouseMotionListener;

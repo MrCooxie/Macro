@@ -1,8 +1,9 @@
-package Main;
+package main;
 
-import Main.ActionInfo;
-import Main.KeyListenerEvents;
-import Main.MouseListenerEvents;
+import attributes.Attribute;
+import attributes.AttributeTypeDisplayVisitor;
+import attributes.AttributeTypeVisitor;
+import attributes.WaitAttribute;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.google.common.base.Stopwatch;
@@ -11,6 +12,9 @@ import java.util.ArrayList;
 
 public class Recorder {
     public static void main(String[] args){
+
+        Attribute attribute = new WaitAttribute(2);
+        attribute.accept(new AttributeTypeDisplayVisitor());
 
       try {
             GlobalScreen.registerNativeHook();
