@@ -1,3 +1,9 @@
+package Main;
+
+import TypesOfAttributes.Attribute;
+import TypesOfAttributes.CoordinateInfo;
+import TypesOfAttributes.MouseMoveAttribute;
+import TypesOfAttributes.MousePressAttribute;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import com.github.kwhat.jnativehook.mouse.NativeMouseMotionListener;
@@ -16,8 +22,8 @@ public class MouseListenerEvents implements NativeMouseListener, NativeMouseMoti
     @Override
     public void nativeMousePressed(NativeMouseEvent nativeEvent) {
         Listeners.addWait(localStopWatch,listOfActions);
-        ActionInfo info1 = new ActionInfo(Action.MOUSE_MOVE, new Attribute(new CoordinateInfo(nativeEvent.getX(),nativeEvent.getY())));
-        ActionInfo info2 = new ActionInfo(Action.MOUSE_CLICK_PRESSED, new Attribute(nativeEvent.getButton()));
+        ActionInfo info1 = new ActionInfo(Action.MOUSE_MOVE, new MouseMoveAttribute(new CoordinateInfo(nativeEvent.getX(),nativeEvent.getY())));
+        ActionInfo info2 = new ActionInfo(Action.MOUSE_CLICK_PRESSED, new MousePressAttribute(nativeEvent.getButton()));
         listOfActions.add(info1);
         listOfActions.add(info2);
     }
@@ -25,14 +31,14 @@ public class MouseListenerEvents implements NativeMouseListener, NativeMouseMoti
     @Override
     public void nativeMouseReleased(NativeMouseEvent nativeEvent) {
         Listeners.addWait(localStopWatch,listOfActions);
-        ActionInfo info = new ActionInfo(Action.MOUSE_CLICK_RELEASED, new Attribute(nativeEvent.getButton()));
+        ActionInfo info = new ActionInfo(Action.MOUSE_CLICK_RELEASED, new MousePressAttribute(nativeEvent.getButton()));
         listOfActions.add(info);
-      //TODO The Draggining Event = moving event, then add one Action to be MOUSE_MOVE, delete coordinates variable in Attribute.
+      //TODO The Draggining Event = moving event, then add one Main.Action to be MOUSE_MOVE, delete coordinates variable in TypesOfAttributes.Attribute.
     }
     @Override
     public void nativeMouseDragged(NativeMouseEvent nativeEvent) {
         Listeners.addWait(localStopWatch,listOfActions);
-        ActionInfo info = new ActionInfo(Action.MOUSE_MOVE,new Attribute(new CoordinateInfo(nativeEvent.getX(),nativeEvent.getY())));
+        ActionInfo info = new ActionInfo(Action.MOUSE_MOVE,new MouseMoveAttribute(new CoordinateInfo(nativeEvent.getX(),nativeEvent.getY())));
         listOfActions.add(info);
     }
 

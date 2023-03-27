@@ -1,3 +1,9 @@
+package Main;
+
+import Main.Action;
+import Main.ActionInfo;
+import TypesOfAttributes.Attribute;
+import TypesOfAttributes.KeyPressAttribute;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.common.base.Stopwatch;
@@ -48,7 +54,7 @@ class KeyListenerEvents implements NativeKeyListener {
         }
         Listeners.addWait(localStopWatch, listOfActions);
 
-        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_PRESSED, new Attribute(buttonType));
+        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_PRESSED, new KeyPressAttribute(buttonType));
         keysActive.add(buttonType);
         listOfActions.add(info);
     }
@@ -57,7 +63,7 @@ class KeyListenerEvents implements NativeKeyListener {
     public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
         int buttonType = convertToKeyEvent(NativeKeyEvent.getKeyText(nativeEvent.getKeyCode()).toLowerCase());
         Listeners.addWait(localStopWatch, listOfActions);
-        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_RELEASED, new Attribute(buttonType));
+        ActionInfo info = new ActionInfo(Action.KEYBOARD_KEY_RELEASED, new KeyPressAttribute(buttonType));
         listOfActions.add(info);
         for (int i = 0; i < keysActive.size(); i++) {
             if (keysActive.get(i) == buttonType) {

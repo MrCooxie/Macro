@@ -1,3 +1,8 @@
+package Main;
+
+import Main.ActionInfo;
+import Main.KeyListenerEvents;
+import Main.MouseListenerEvents;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.google.common.base.Stopwatch;
@@ -22,6 +27,6 @@ public class Recorder {
         GlobalScreen.addNativeMouseListener(mouseListenerEvent);
         GlobalScreen.addNativeMouseMotionListener(mouseListenerEvent);
         GlobalScreen.addNativeKeyListener(keyListenerEvents);
-        Player.play("C:\\Users\\user\\Documents\\AllProgrammingProjects\\Java Programs\\Macro\\src\\main\\java\\MacroList\\Test");
+       // Main.Player.play("C:\\Users\\user\\Documents\\AllProgrammingProjects\\Java Programs\\Macro\\src\\main\\java\\MacroList\\Test");
     }
 }
